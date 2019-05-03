@@ -2,7 +2,7 @@
 title: "lecture7_proj: R: Functions and packages"
 author: "Xuerui HUang"
 date: "4/24/2019"
-output: html_document
+output: github_document
 ---
 
 ```{r setup, include=FALSE}
