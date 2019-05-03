@@ -1,0 +1,50 @@
+---
+title: "Class_6"
+author: "Xuerui HUang"
+date: "4/19/2019"
+output: html_document
+---
+```{r}
+library(dplyr)
+```
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r}
+plot(1:10, type = "l",col = "red")
+```
+
+```{r}
+table1 <- read.table("test1.txt",sep = ",",header = TRUE)
+table2 <- read.table("test2.txt",sep = "$",header = TRUE)
+table3 <- read.table("test3.txt",header = TRUE)
+
+table3 <- read.delim("test3.txt") %>% as.data.frame(.)
+#table3
+```
+
+```{r}
+add <- function(x,y = 1){
+  x+y
+}
+
+add(1)
+```
+
+```{r}
+rescale <- function(x) {
+   rng <-range(x)
+   (x - rng[1]) / (rng[2] - rng[1])
+}
+
+rescale(1:10)
+```
+
+
+## Section 2
+```{r}
+
+```
+
