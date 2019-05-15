@@ -1,0 +1,44 @@
+---
+title: "class13"
+author: "Xuerui HUang"
+date: "5/10/2019"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r}
+library(bio3d)
+file.name <- get.pdb("1HSG")
+hiv <- read.pdb(file.name)
+
+# trim for desired info
+prot <- trim.pdb(hiv, "protein")
+lig <- trim.pdb(hiv, "ligand")
+
+#write file
+write.pdb(prot,file="1hsg_protein.pdb")
+write.pdb(lig, file="1hsg_ligand.pdb")
+```
+
+# Read result
+```{r}
+res <- read.pdb("all.pdbqt",multi = TRUE)
+res
+write.pdb(res,file = "resilts.pdb")
+
+ori <- read.pdb("ligand.pdbqt")
+
+```
+
+
+```{r}
+pdb <- read.pdb("1hel")
+modes <- nma( pdb )
+m7 <- mktrj(modes, mode=7, file="mode_7.pdb")
+
+plot(modes)
+```
+
