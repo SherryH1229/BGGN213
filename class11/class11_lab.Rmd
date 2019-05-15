@@ -58,6 +58,22 @@ library(rgl)
 view(pdb, "overview", col="sse")
 ```
 
+# Section 6
+```{r}
+#align multiple files
+ids <- c("1TND_B","1AGR_A","1TAG_A","1GG2_A","1KJY_A","4G5Q_A")
+files <- get.pdb(ids, split = TRUE)
+
+# Extract and align the chains we are interested in
+pdbs <- pdbaln(files, fit = TRUE)
+view(pdbs)
+```
+```{r}
+seqidentity(pdbs)
+
+```
+
+
 
 
 
