@@ -2,15 +2,19 @@
 title: "Class15"
 author: "Xuerui HUang"
 date: "5/22/2019"
-output: html_document
+output: github_document
 ---
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
 ```
-# Load Data
+# Load Packages
 ```{r,echo = FALSE,message=FALSE}
 library(DESeq2)
+library(tidyverse)
+```
+# load and Process Data
+```{r}
 metaFile <- "GSE37704_metadata.csv"
 countFile <- "GSE37704_featurecounts.csv"
 
@@ -22,7 +26,9 @@ head(colData)
 countData = read.csv(countFile, row.names=1)
 head(countData)
 ```
-# Process Data
+
+Process Data
+
 ```{r}
 # Remove length column to make sure the row and column number are the same
 countData$length <- NULL
@@ -32,19 +38,21 @@ countData <- countData[rowSums(countData)>0,]
 head(countData)
 ```
 
-# Running DESeq
+# DESeq
+
+## Running DESeq
 ```{r}
 dds <-  DESeqDataSetFromMatrix(countData=countData,
                              colData=colData,
                              design=~condition)
 dds <-  DESeq(dds)
-res <-  results(dds)
+res <-  results(dds) %>% as.data.frame(.)
 
 summary(res) # 4396 genes, which is 28% of the total genes, are down regulated
 
 ```
 
-# Making plot based on the result
+## Making plot based on the result
 ```{r}
 # Plot volcano plot
 plot( res$log2FoldChange, -log(res$padj) )
@@ -64,10 +72,34 @@ mycols[ inds ] <- "blue"
 plot( res$log2FoldChange, -log(res$padj), col=mycols, xlab="Log2(FoldChange)", ylab="-Log(P-value)" )
 ```
 
-# Get annotation
+## Get annotation of DESeq Genes
 ```{r}
-anno_info_Hs <- AnnotationDbi::select(org.Hs.eg.db, keys=rownames(mycounts), 
-                                      columns=c("SYMBOL","ENTREZID","UNIPROT"), keytype="ENSEMBL")
-mycounts <- merge(mycounts,anno_info_Hs,by.x = "row.names",by.y = "ENSEMBL")
+library("AnnotationDbi")
+library("org.Hs.eg.db")
+anno_info_Hs <- AnnotationDbi::select(org.Hs.eg.db, keys=rownames(res), 
+                                      columns=c("SYMBOL","ENTREZID","GENENAME"), keytype="ENSEMBL",multiVals="first")
+
+res <- merge(res,anno_info_Hs,by.x = "row.names",by.y = "ENSEMBL")
+colnames(res)[8:10] <- c("symbol","entrez","name")
+#column_to_rownames(res,"Row.names")
+
+# output DESeq genes to a file named deseq_results.csv
+res = res[order(res$pvalue),]
+write.csv(res,"deseq_results.csv")
 ```
 
+# KEGG pathways
+
+## Load Packages
+```{r,echo = FALSE,message=FALSE}
+# inatll packages
+# BiocManager::install( c("pathview", "gage", "gageData") )
+
+# Load packages
+library(pathview)
+library(gage)
+library(gageData)
+
+data(kegg.sets.hs)
+data(sigmet.idx.hs)
+```
