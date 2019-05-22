@@ -1,0 +1,73 @@
+---
+title: "Class15"
+author: "Xuerui HUang"
+date: "5/22/2019"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+# Load Data
+```{r,echo = FALSE,message=FALSE}
+library(DESeq2)
+metaFile <- "GSE37704_metadata.csv"
+countFile <- "GSE37704_featurecounts.csv"
+
+# Import metadata and take a peak
+colData = read.csv(metaFile, row.names=1)
+head(colData)
+
+# Import countdata
+countData = read.csv(countFile, row.names=1)
+head(countData)
+```
+# Process Data
+```{r}
+# Remove length column to make sure the row and column number are the same
+countData$length <- NULL
+
+# remove the rows that all rows are zero
+countData <- countData[rowSums(countData)>0,]
+head(countData)
+```
+
+# Running DESeq
+```{r}
+dds <-  DESeqDataSetFromMatrix(countData=countData,
+                             colData=colData,
+                             design=~condition)
+dds <-  DESeq(dds)
+res <-  results(dds)
+
+summary(res) # 4396 genes, which is 28% of the total genes, are down regulated
+
+```
+
+# Making plot based on the result
+```{r}
+# Plot volcano plot
+plot( res$log2FoldChange, -log(res$padj) )
+
+# plot more advanced verison of volcano plot
+# Make a color vector for all genes
+mycols <- rep("gray", nrow(res) )
+
+# Color red the genes with absolute fold change above 2
+mycols[ abs(res$log2FoldChange) > 2 ] <- "red"
+
+# Color blue those with adjusted p-value less than 0.01
+#  and absolute fold change more than 2
+inds <- (res$padj<0.01) & (abs(res$log2FoldChange) > 2 )
+mycols[ inds ] <- "blue"
+
+plot( res$log2FoldChange, -log(res$padj), col=mycols, xlab="Log2(FoldChange)", ylab="-Log(P-value)" )
+```
+
+# Get annotation
+```{r}
+anno_info_Hs <- AnnotationDbi::select(org.Hs.eg.db, keys=rownames(mycounts), 
+                                      columns=c("SYMBOL","ENTREZID","UNIPROT"), keytype="ENSEMBL")
+mycounts <- merge(mycounts,anno_info_Hs,by.x = "row.names",by.y = "ENSEMBL")
+```
+
