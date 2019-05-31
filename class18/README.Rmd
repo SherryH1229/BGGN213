@@ -1,0 +1,101 @@
+---
+title: "Class17 R anlysis"
+author: "Xuerui HUang"
+date: "5/31/2019"
+output: github_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+```{r}
+library(GenomicDataCommons)
+library(TCGAbiolinks)
+library(maftools)
+
+status()
+```
+```{r}
+projects <- getGDCprojects()
+head(projects)
+
+cases_by_project <- cases() %>% facet("project.project_id") %>% aggregations()
+head(cases_by_project)
+
+# plot barplot
+x <- cases_by_project$project.project_id
+colvec <- rep("lightblue", nrow(x))
+colvec[which(x$key=="TCGA-PAAD")] <- "red"
+
+barplot(x$doc_count,log="y",names.arg=x$key,col=colvec, las=2)
+```
+
+# Detect Cancer 
+```{r}
+library(bio3d)
+seqs<- read.fasta("lecture18_sequences.fa")
+
+kmer_cands <- c()
+for (i in (1:length(seqs$ali))){
+  if (seqs$ali[,i][2] == "-"){
+    break
+  }
+  if (seqs$ali[,i][1]!=seqs$ali[,i][2]){
+    for (j in ((i-8):i)){
+      temp_kmer <- seqs$ali[,c(j:(j+8))] %>% as.data.frame(.) %>% .[2,] %>% unlist(.) %>% as.character(.)
+      temp_kmer <- paste(temp_kmer, collapse = '')
+      kmer_cands <- c(kmer_cands,temp_kmer)
+    }
+  }
+  
+}
+
+kmer_cands
+
+conserv(seqs,method = "identity")
+```
+
+Find the position in mismatch.inds that are NOt in gap.inds
+```{r}
+## Calculate positional identity scores
+ide <- conserv(seqs$ali, method="identity")
+mismatch.inds <- which(ide < 1) 
+
+gaps <- gap.inspect(seqs)
+gap.inds <- gaps$t.inds
+
+tumor.sites <- mismatch.inds[!mismatch.inds %in% gap.inds]
+```
+name the mismatch site
+```{r}
+## Make a "names" label for our output sequences (one per mutant)
+tumor.names <- paste0(seqs$ali["P53_wt",tumor.sites],
+                       tumor.sites,
+                       seqs$ali["P53_mutant",tumor.sites])
+
+tumor.names
+```
+
+```{r}
+## Sequence positions surounding each mutant site
+start.position <- tumor.sites - 8
+end.position <-  tumor.sites + 8
+
+# Blank matrix to store sub-sequences
+store.seqs <- matrix("-", nrow=length(tumor.sites), ncol=17)
+rownames(store.seqs) <- tumor.names
+
+## Extract each sub-sequence
+for(i in 1:length(tumor.sites)) {
+  store.seqs[i,] <- seqs$ali["P53_mutant",start.position[i]:end.position[i]]
+}
+
+## First blank out the gap positions 
+store.seqs[store.seqs == "-"] <- ""
+
+store.seqs
+
+## Output a FASTA file for further analysis
+write.fasta(seqs=store.seqs, ids=tumor.names, file="subsequences.fa")
+```
+
