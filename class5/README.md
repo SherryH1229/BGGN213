@@ -1,25 +1,17 @@
--   [load required libararies](#load-required-libararies)
--   [Section 2: Customizing plots](#section-2-customizing-plots)
-    -   [2A. Line plot](#a.-line-plot)
-    -   [2B. Barplot](#b.-barplot)
-    -   [2C. Histograms](#c.-histograms)
--   [Section 3: Using color in plots](#section-3-using-color-in-plots)
-    -   [3A. Providing color vectors](#a.-providing-color-vectors)
-    -   [3B. Coloring by value](#b.-coloring-by-value)
-    -   [3C. Dynamic use of color](#c.-dynamic-use-of-color)
+Class5:Data exploration and visualization in R
+================
+Xuerui HUang
+4/17/2019
 
-load required libararies
-========================
+# load required libararies
 
 ``` r
 library(dplyr)
 ```
 
-Section 2: Customizing plots
-============================
+# Section 2: Customizing plots
 
-2A. Line plot
--------------
+## 2A. Line plot
 
 The file weight\_chart.txt from the example data you downloaded above
 contains data for a growth chart for a typical baby over the first 9
@@ -37,10 +29,9 @@ plot(weight,pch=15,cex=1.5,lwd=2,ylim=c(2,10),xlab="Age (months)",
 lines(weight,lwd=2)
 ```
 
-![](README_files/figure-markdown_github/unnamed-chunk-2-1.png)
+![](README_files/figure-gfm/unnamed-chunk-2-1.png)<!-- -->
 
-2B. Barplot
------------
+## 2B. Barplot
 
 The file feature\_counts.txt contains a summary of the number of
 features of different types in the mouse GRCm38 genome.
@@ -62,10 +53,9 @@ barplot(feature$Count,names.arg = feature$Feature,cex.names=0.8,
         horiz=TRUE,las = 1,main="Num_Features_GRCm38")
 ```
 
-![](README_files/figure-markdown_github/unnamed-chunk-3-1.png)
+![](README_files/figure-gfm/unnamed-chunk-3-1.png)<!-- -->
 
-2C. Histograms
---------------
+## 2C. Histograms
 
 Plot out the distribution of 10000 points sampled from a standard normal
 distribution along with another 10000 points sampled from the same
@@ -76,13 +66,11 @@ par(mar=c(5.1,4.1,4.1,2.1))
 hist(c(rnorm(10000),rnorm(10000)+4),main = "Histogram",breaks=100,xlab = "x")
 ```
 
-![](README_files/figure-markdown_github/unnamed-chunk-4-1.png)
+![](README_files/figure-gfm/unnamed-chunk-4-1.png)<!-- -->
 
-Section 3: Using color in plots
-===============================
+# Section 3: Using color in plots
 
-3A. Providing color vectors
----------------------------
+## 3A. Providing color vectors
 
 The file male\_female\_counts.txt contains a time series split into male
 and female count values.
@@ -100,10 +88,9 @@ barplot(mf_count$Count,names.arg =mf_count$Sample,las = 2,
         col = rainbow(10))     
 ```
 
-![](README_files/figure-markdown_github/unnamed-chunk-5-1.png)
+![](README_files/figure-gfm/unnamed-chunk-5-1.png)<!-- -->
 
-3B. Coloring by value
----------------------
+## 3B. Coloring by value
 
 The file up\_down\_expression.txt contains an expression comparison
 dataset, but has an extra column which classifies the rows into one of 3
@@ -136,10 +123,9 @@ palette(c("red","gray","blue"))
 plot(expression$Condition1,expression$Condition2,col = expression$State,xlab="Expression condition 1", ylab="Expression condition 2")
 ```
 
-![](README_files/figure-markdown_github/unnamed-chunk-6-1.png)
+![](README_files/figure-gfm/unnamed-chunk-6-1.png)<!-- -->
 
-3C. Dynamic use of color
-------------------------
+## 3C. Dynamic use of color
 
 The file expression\_methylation.txt contains data for gene body
 methylation, promoter methylation and gene expression.
@@ -159,7 +145,7 @@ nrow(meth)
 plot(meth$gene.meth, meth$expression)
 ```
 
-![](README_files/figure-markdown_github/unnamed-chunk-7-1.png)
+![](README_files/figure-gfm/unnamed-chunk-7-1.png)<!-- -->
 
 Now try to color by density
 
@@ -170,9 +156,9 @@ dcols <- densCols(meth$gene.meth,meth$expression)
 plot(meth$gene.meth,meth$expression,col = dcols,pch = 20)
 ```
 
-![](README_files/figure-markdown_github/unnamed-chunk-8-1.png) Since
-most of the data is clustered near the origin. Tye to restrict to the
-genes that have more than zero expresion values
+![](README_files/figure-gfm/unnamed-chunk-8-1.png)<!-- --> Since most of
+the data is clustered near the origin. Tye to restrict to the genes that
+have more than zero expresion values
 
 ``` r
 # subset genes with above 0 expresion
@@ -183,7 +169,7 @@ dcols <- densCols(meth.adj$gene.meth,meth.adj$expression)
 plot(meth.adj$gene.meth,meth.adj$expression,col = dcols,pch = 20)
 ```
 
-![](README_files/figure-markdown_github/unnamed-chunk-9-1.png)
+![](README_files/figure-gfm/unnamed-chunk-9-1.png)<!-- -->
 
 ``` r
 # change color by using colorramp
@@ -193,4 +179,4 @@ plot(meth.adj$gene.meth,meth.adj$expression,col = dcols,pch = 20,
      xlab = "Expressopm",ylab = "Gene body methylation")
 ```
 
-![](README_files/figure-markdown_github/unnamed-chunk-9-2.png)
+![](README_files/figure-gfm/unnamed-chunk-9-2.png)<!-- -->

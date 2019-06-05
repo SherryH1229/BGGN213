@@ -1,12 +1,8 @@
 ---
 title: "Class5:Data exploration and visualization in R"
-author: "Xuerui HUang"
+author: "Xuerui Huang"
 date: "4/17/2019"
-output: 
-  md_document:
-    toc: true
-    toc_depth: 5
-    variant: markdown_github
+output: github_document
 ---
 
 ```{r setup, include=FALSE}
