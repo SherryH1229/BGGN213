@@ -2,7 +2,10 @@
 title: "Class15"
 author: "Xuerui HUang"
 date: "5/22/2019"
-output: github_document
+output: 
+  github_document:
+    toc: true
+    toc_depth: 5
 ---
 
 ```{r setup, include=FALSE}
@@ -90,7 +93,7 @@ write.csv(res,"deseq_results.csv")
 
 # KEGG pathways
 
-## Load Packages
+## Load Packages and Data
 ```{r,echo = FALSE,message=FALSE}
 # inatll packages
 # BiocManager::install( c("pathview", "gage", "gageData") )
@@ -102,4 +105,51 @@ library(gageData)
 
 data(kegg.sets.hs)
 data(sigmet.idx.hs)
+
+# Focus on signaling and metabolic pathways only
+kegg.sets.hs = kegg.sets.hs[sigmet.idx.hs]
+
+# Examine the first 3 pathways
+head(kegg.sets.hs, 3)
 ```
+## Perform Kegg
+```{r}
+foldchanges = res$log2FoldChange
+names(foldchanges) = res$entrez
+head(foldchanges)
+
+# Get the results
+keggres = gage(foldchanges, gsets=kegg.sets.hs)
+
+attributes(keggres)
+head(keggres$less)
+
+pathview(gene.data=foldchanges, pathway.id="hsa04110")
+```
+![](hsa04110.pathview.png)
+
+# Gene Ontology
+```{r}
+data(go.sets.hs)
+data(go.subs.hs)
+
+# Focus on Biological Process subset of GO
+gobpsets = go.sets.hs[go.subs.hs$BP]
+
+gobpres = gage(foldchanges, gsets=gobpsets, same.dir=TRUE)
+test <- gobpres$greater
+lapply(gobpres, head)
+```
+
+# Reactome Analysis
+```{r}
+sig_genes <- res[res$padj <= 0.05 & !is.na(res$padj), "symbol"]
+print(paste("Total number of significant genes:", length(sig_genes)))
+
+write.table(sig_genes, file="significant_genes.txt", row.names=FALSE, col.names=FALSE, quote=FALSE)
+
+x <- 1:10 
+x[ c(TRUE, FALSE) ]
+```
+
+

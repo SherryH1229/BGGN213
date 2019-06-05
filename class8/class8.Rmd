@@ -1,0 +1,163 @@
+---
+title: 'Class8: Machine Learning'
+author: "Xuerui HUang"
+date: "4/26/2019"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+# K means clustering
+```{r}
+# Generate some example data for clustering
+tmp <- c(rnorm(30,-3), rnorm(30,3))
+x <- cbind(x=tmp, y=rev(tmp))
+plot(x)
+
+kmeans_res <- kmeans(x,2,20)
+
+kmeans_res
+#kmeans_res$centers
+```
+
+Q. How many points are in each cluster?
+   30
+   
+Q. What ‘component’ of your result object details
+      - cluster size?
+      - cluster assignment/membership?
+      - cluster center?
+      
+```{r}
+require(ggplot2)
+#plot kmeans
+plot(x,col = kmeans_res$cluster)+points(kmeans_res$centers,col = "blue",pch = 18,cex = 3)
+```
+
+# Hierrachical Clustering
+```{r}
+d <- dist(x)
+hc <- hclust(d)
+hc 
+
+plot(hc)+abline(h = 6,col = "red")
+cutree(hc,h = 6)
+```
+```{r}
+x <- rbind(
+  matrix(rnorm(100, mean=0, sd = 0.3), ncol = 2),   # c1
+  matrix(rnorm(100, mean = 1, sd = 0.3), ncol = 2), # c2
+  matrix(c(rnorm(50, mean = 1, sd = 0.3),           # c3
+           rnorm(50, mean = 0, sd = 0.3)), ncol = 2))
+colnames(x) <- c("x", "y")
+
+plot(x)
+
+# Step 3. Generate colors for known clusters
+#         (just so we can compare to hclust results)
+col <- as.factor( rep(c("c1","c2","c3"), each=50) )
+plot(x, col=col)
+
+# perform clustering
+d <- dist(x)
+hc <- hclust(d)
+hc 
+plot(hc)
+
+#different plots
+
+#original clustering
+plot(x, col=col)
+
+#two groups
+plot(x, col=cutree(hc,k = 2))
+
+#three groups
+plot(x, col=cutree(hc,k =3))
+```
+
+```{r}
+col_df <- as.data.frame(col)
+col_df$col <-gsub("c","",col_df$col)
+
+hc_df <- as.data.frame(cutree(hc,k = 2))
+colnames(hc_df) <- "col"
+merge_res <- merge(col_df,hc_df,"col")
+```
+
+# PCA
+
+```{r}
+mydata <- read.csv("https://tinyurl.com/expression-CSV",
+row.names=1)
+
+head(mydata)
+
+pca <- prcomp(t(mydata),scale = TRUE)
+summary(pca)
+attributes(pca)
+```
+Thre are `r nrow(mydata)` genes in this dataset 
+
+```{r}
+#plot the first two pca components
+plot(pca$x[,1],pca$x[,2])
+#well seperated
+
+# Perfect variation is oftern more informative to look at
+pca.var <- pca$sdev^2
+pca.var.per <- round (pca.var/sum(pca.var)*100,1)
+
+pca.var.per
+
+xlab <- paste("PC1 (",pca.var.per[1],"%",sep = "")
+ylab <- paste("PC2 (",pca.var.per[2],"%",sep = "")
+
+plot(pca$x[,1],pca$x[,2],xlab = xlab, ylab = ylab)
+
+```
+
+# Food
+```{r}
+##########load data
+require(dplyr)
+
+x <- read.csv("https://bioboot.github.io/bggn213_f17/class-material/UK_foods.csv")
+dim(x)
+head(x)
+
+require(tibble)
+x <- read.csv("https://bioboot.github.io/bggn213_f17/class-material/UK_foods.csv") %>% 
+  column_to_rownames(., var = "X") %>% t(.) 
+
+x <- read.csv("https://bioboot.github.io/bggn213_f17/class-material/UK_foods.csv",
+              row.names = 1)
+
+###########plot data
+#beside
+barplot(as.matrix(x), beside=T, col=rainbow(nrow(x)))
+#stacked
+barplot(as.matrix(x), beside=F, col=rainbow(nrow(x)))
+
+pairs(x, col=rainbow(10), pch=16)
+
+############ PCA
+pca <- prcomp(t(x))
+pca_res <- summary(pca)
+
+col_vec <- c("orange","red","blue","green")
+plot(pca$x[,1], pca$x[,2], xlab="PC1", ylab="PC2", xlim=c(-270,500),col = col_vec)+
+  text(pca$x[,1], pca$x[,2], colnames(x),col = col_vec)
+
+#calculate the proportion
+v <- round( pca$sdev^2/sum(pca$sdev^2),2)
+v
+
+pca_res$importance
+barplot(v,xlab = "principle component",ylab="Percent Variation")
+```
+
+
+

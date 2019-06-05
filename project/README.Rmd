@@ -1,0 +1,85 @@
+---
+title: "Final Project R Analysis"
+author: "Xuerui HUang"
+date: "6/2/2019"
+output: github_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+# Load package
+```{r}
+library("bio3d")
+```
+
+# Calculation
+Load fasta file
+```{r}
+seqs<- read.fasta("Sequences.fa")
+
+seqs
+```
+
+plot heatmap
+```{r}
+#calculation identity
+iden <- seqidentity(seqs, normalize=TRUE, similarity=FALSE, ncore=1, nseg.scale=1)
+
+# plot heatmap
+heatmap(iden,cexRow = 0.9,cexCol = 0.9,margins=c(10,8))
+```
+# Findthe most similar atomic resolution structures
+Generate the consensus sequence from alignment
+```{r}
+# run consensus function in Bio3D wth default cutoff of 0.6
+# Get a consensus seq for all 7 seqs
+concensus_seq <- consensus(seqs)
+concensus_seq
+
+# Runing blast 
+blast.pdb(concensus_seq, database = "pdb", time.out = NULL, chain.single=TRUE)
+```
+There are too many gaps in the consensus sequence, try the sequence with highest identity to all the al
+```{r}
+require(dplyr)
+#get the most similar sequence
+which(iden[2:ncol(iden),] == (max(iden[2:ncol(iden),1])))
+sim_seq <- seqs$ali["Southern_house_mosquito",]
+
+# Running blast
+blast_res <- blast.pdb(sim_seq, database = "pdb", time.out = NULL, chain.single=TRUE)
+plot.blast(blast_res) #plot the blast result 
+
+#Annote the bast result with mor specific info
+annotate_res <- pdb.annotate(blast_res$hit.tbl$pdb.id[1:5])[,c("experimentalTechnique","resolution","source","chainId")]
+
+# filter and reformat output info
+res_out <- blast_res$hit.tbl[,c("pdb.id","evalue","identity")] %>% .[1:5,]
+res_out <- merge(res_out,annotate_res,by.x = "pdb.id",by.y = "row.names") %>% .[order(-.$identity),]
+res_out$pdb.id <-gsub("_.*","",res_out$pdb.id)
+
+write.csv(res_out,"res.out")
+
+
+
+```
+
+```{r}
+library(rJava)
+.jinit()
+.jcall("java/lang/System", "S", "getProperty", "java.runtime.version")
+
+library(RDAVIDWebService)
+david<-DAVIDWebService$(email="x7huang@ucsd.edu", url="https://david.ncifcrf.gov/webservice/services/DAVIDWebService.DAVIDWebServiceHttpSoap12Endpoint/")
+david
+library(ggplot2)
+library(BACA)
+
+data(gene.lists.ex)
+
+result.kegg <- DAVIDsearch(gene.lists.ex, david.user = "x7huang@ucsd.edu", 
+                           idType="ENTREZ_GENE_ID", annotation="KEGG_PATHWAY")
+```
+

@@ -1,0 +1,116 @@
+---
+title: "class14"
+author: "Xuerui HUang"
+date: "5/17/2019"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+#load package
+```{r,message=FALSE,echo=FALSE}
+library(DESeq2)
+library(pcaExplorer)
+library(tidyverse)
+
+library("org.Hs.eg.db")
+```
+
+#load data
+```{r}
+#load data
+counts <- read.csv("airway_scaledcounts.csv", stringsAsFactors = FALSE)
+metadata <-  read.csv("airway_metadata.csv", stringsAsFactors = FALSE)
+
+#check whether samples names are in the same order 
+all.equal(colnames(counts)[-1],metadata$id)
+```
+
+```{r}
+#control
+control <- metadata[metadata[,"dex"]=="control",]
+control.mean <- rowSums( counts[ ,control$id] )/4 
+names(control.mean) <- counts$ensgene
+head(control.mean)
+
+#treatment
+treatment <- metadata[metadata[,"dex"]=="treated",]
+treated.mean <- rowSums(counts[ ,treatment$id] )/ncol(treatment)
+names(treated.mean) <- counts$ensgene
+head(treated.mean)
+
+#combine two groups of data
+meancounts <- data.frame(control.mean, treated.mean)
+
+#plot log2 fold change 
+plot(meancounts,log="xy")
+
+# log2foldChange
+meancounts$log2fc <- log2(meancounts[,"treated.mean"]/meancounts[,"control.mean"])
+head(meancounts)
+
+zero.vals <- which(meancounts[,1:2]==0, arr.ind=TRUE)
+
+to.rm <- unique(zero.vals[,1])
+mycounts <- meancounts[-to.rm,]
+head(mycounts)
+
+#count up and down regulated genes
+mycounts[mycounts$log2fc>2,] %>% nrow(.) #number of up regulated genes
+mycounts[mycounts$log2fc<(-2),]%>% nrow(.) #number of down regulated genes
+```
+
+adding annotation data
+```{r}
+anno <- read.csv("annotables_grch38.csv")
+merge_df <- merge(mycounts,anno,by.x = "row.names",by.y = "ensgene")
+```
+
+
+
+# Annotation by using AnnotationDbi
+```{r}
+columns(org.Hs.eg.db)
+### get anno info one by one
+# mycounts$symbol <- mapIds(org.Hs.eg.db,
+#                      keys=row.names(mycounts), # Our genenames
+#                      keytype="ENSEMBL",        # The format of our genenames
+#                      column=c("SYMBOL"),          # The new format we want to add
+#                      multiVals="list")
+
+# get anno info as input a vector
+anno_info_Hs <- AnnotationDbi::select(org.Hs.eg.db, keys=rownames(mycounts), 
+                                      columns=c("SYMBOL","ENTREZID","UNIPROT"), keytype="ENSEMBL")
+mycounts <- merge(mycounts,anno_info_Hs,by.x = "row.names",by.y = "ENSEMBL")
+```
+
+
+# Unsing DESeq package to do the analysis
+```{r}
+dds <- DESeqDataSetFromMatrix(countData=counts, 
+                              colData=metadata, 
+                              design=~dex, 
+                              tidy=TRUE)
+#pcaExplorer(dds)
+res <- DESeq(dds) %>% results(.)
+
+
+plot( res$log2FoldChange,  -log(res$padj), 
+ ylab="-Log(P-value)", xlab="Log2(FoldChange)")
+
+# Add some cut-off lines
+abline(v=c(-2,2), col="darkgray", lty=2)
+abline(h=-log(0.05), col="darkgray", lty=2)
+
+BiocInstaller::install("EnhancedVolcano")
+library(EnhancedVolcano)
+
+EnhancedVolcano(x,
+    lab = x$symbol,
+    x = 'log2FoldChange',
+    y = 'pvalue')
+
+```
+
