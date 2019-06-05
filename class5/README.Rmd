@@ -6,6 +6,7 @@ output:
   md_document:
     toc: true
     toc_depth: 5
+    variant: markdown_github
 ---
 
 ```{r setup, include=FALSE}
