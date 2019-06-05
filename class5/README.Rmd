@@ -107,6 +107,7 @@ dcols <- densCols(meth$gene.meth,meth$expression)
 #plot
 plot(meth$gene.meth,meth$expression,col = dcols,pch = 20)
 ```
+
 Since most of the data is clustered near the origin. Tye to restrict to the genes that have more than zero expresion values
 ```{r}
 # subset genes with above 0 expresion

@@ -1,6 +1,6 @@
 Class5:Data exploration and visualization in R
 ================
-Xuerui HUang
+Xuerui Huang
 4/17/2019
 
 # load required libararies
@@ -156,9 +156,10 @@ dcols <- densCols(meth$gene.meth,meth$expression)
 plot(meth$gene.meth,meth$expression,col = dcols,pch = 20)
 ```
 
-![](README_files/figure-gfm/unnamed-chunk-8-1.png)<!-- --> Since most of
-the data is clustered near the origin. Tye to restrict to the genes that
-have more than zero expresion values
+![](README_files/figure-gfm/unnamed-chunk-8-1.png)<!-- -->
+
+Since most of the data is clustered near the origin. Tye to restrict to
+the genes that have more than zero expresion values
 
 ``` r
 # subset genes with above 0 expresion
