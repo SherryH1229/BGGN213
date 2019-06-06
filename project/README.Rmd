@@ -36,10 +36,10 @@ Generate the consensus sequence from alignment
 # run consensus function in Bio3D wth default cutoff of 0.6
 # Get a consensus seq for all 7 seqs
 concensus_seq <- consensus(seqs)
-concensus_seq
+concensus_seq$seq #too many gaps
 
-# Runing blast 
-blast.pdb(concensus_seq, database = "pdb", time.out = NULL, chain.single=TRUE)
+# Runing blast (error)
+#blast.pdb(concensus_seq, database = "pdb", time.out = NULL, chain.single=TRUE)
 ```
 There are too many gaps in the consensus sequence, try the sequence with highest identity to all the al
 ```{r}
@@ -61,25 +61,6 @@ res_out <- merge(res_out,annotate_res,by.x = "pdb.id",by.y = "row.names") %>% .[
 res_out$pdb.id <-gsub("_.*","",res_out$pdb.id)
 
 write.csv(res_out,"res.out")
-
-
-
 ```
 
-```{r}
-library(rJava)
-.jinit()
-.jcall("java/lang/System", "S", "getProperty", "java.runtime.version")
-
-library(RDAVIDWebService)
-david<-DAVIDWebService$(email="x7huang@ucsd.edu", url="https://david.ncifcrf.gov/webservice/services/DAVIDWebService.DAVIDWebServiceHttpSoap12Endpoint/")
-david
-library(ggplot2)
-library(BACA)
-
-data(gene.lists.ex)
-
-result.kegg <- DAVIDsearch(gene.lists.ex, david.user = "x7huang@ucsd.edu", 
-                           idType="ENTREZ_GENE_ID", annotation="KEGG_PATHWAY")
-```
 
