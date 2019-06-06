@@ -1,4 +1,6 @@
-# 213bggn
+# BGGN213 Fundation of Bioinformatics
+
+**A hands-on introduction to the computer-based analysis of genomic and biomolecular data from the Division of Biological Sciences, UCSD**
 
 This is my coursework from [BGGN-213 at UC San Diego](https://sherryh1229.github.io/BGGN213/) during Spring 2019. 
 Here you will find all my hands-on work.
