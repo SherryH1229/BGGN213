@@ -6,7 +6,7 @@ to the computer-based analysis of genomic and biomolecular data from the Divisio
 
 **Course Director**: [Prof. Barry J. Grant](http://thegrantlab.org/)
 
-This is my coursework from [BGGN-213 at UC San Diego](https://github.com/SherryH1229/BGGN213) during Spring 2019. 
+This is my coursework from [BGGN-213 at UC San Diego](https://bioboot.github.io/bggn213_S19/) during Spring 2019. 
 
 Here you will find all my hands-on work.
 
@@ -40,5 +40,5 @@ My class content includes:
 
 - class 18: [Cancer genomics](https://github.com/SherryH1229/BGGN213/tree/master/class18)
 
-- Final Project: [Find a gene]((https://github.com/SherryH1229/BGGN213/tree/master/project)
+- Final Project: [Find a gene](https://github.com/SherryH1229/BGGN213/tree/master/project)
   - The objective with this assignment is for students to demonstrate their grasp of database searching, sequence analysis, structure analysis and the R environment that have covered in class.
