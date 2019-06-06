@@ -1,0 +1,57 @@
+---
+title: "class13"
+author: "Xuerui HUang"
+date: "5/10/2019"
+output: github_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+# Section 1: In silico docking of drugs to HIV-1 protease
+
+Obtaining and inspecting our input structure
+```{r}
+#load pacakge required
+library(bio3d)
+
+#get data
+file.name <- get.pdb("1HSG")
+hiv <- read.pdb(file.name)
+hiv  #print data
+
+# trim for desired info
+prot <- trim.pdb(hiv, "protein")
+prot
+lig <- trim.pdb(hiv, "ligand")
+lig
+
+#write file
+write.pdb(prot,file="1hsg_protein.pdb")
+write.pdb(lig, file="1hsg_ligand.pdb")
+```
+
+# Using R to do visulization
+
+Load the data we got from VMD
+```{r}
+res <- read.pdb("all.pdbqt",multi = TRUE)
+res
+write.pdb(res,file = "resilts.pdb")
+
+ori <- read.pdb("ligand.pdbqt")
+rmsd(ori, res)
+```
+
+# Section 3: Exploring the conformational dynamics of proteins
+```{r}
+pdb <- read.pdb("1hel")
+modes <- nma( pdb )
+m7 <- mktrj(modes, mode=7, file="mode_7.pdb")
+
+plot(modes)
+
+# Visualize NMA results
+mktrj(modes, mode=7, file="nma_7.pdb")
+```
+
