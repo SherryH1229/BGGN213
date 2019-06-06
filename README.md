@@ -40,3 +40,5 @@ My class content includes:
 
 - class 18: [Cancer genomics](https://github.com/SherryH1229/BGGN213/tree/master/class18)
 
+- Final Project: [Find a gene]((https://github.com/SherryH1229/BGGN213/tree/master/project)
+The objective with this assignment is for students to demonstrate their grasp of database searching, sequence analysis, structure analysis and the R environment that have covered in class.
