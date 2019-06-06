@@ -2,7 +2,8 @@ Final Project R Analysis
 ================
 Xuerui HUang
 6/2/2019
-
+# Full Version Report
+The [whole project](https://github.com/SherryH1229/BGGN213/blob/master/project/BGGN213_W19_x7huang.pdf) in PDF formt 
 # Load package
 
 ``` r
