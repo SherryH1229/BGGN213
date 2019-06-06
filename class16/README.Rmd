@@ -1,0 +1,62 @@
+---
+title: '16: Essential UNIX for bioinformatics'
+author: "Xuerui Huang"
+date: "6/6/2019"
+output: github_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+```{r,message=FALSE}
+library(dplyr)
+library(ggplot2)
+```
+
+# Using RStudio online (or locally) to read your output
+## Section I
+```{r}
+#load file
+data <- read.table("mm-second.x.zebrafish.tsv") 
+colnames(data) <- c("qseqid", "sseqid", "pident", "length", "mismatch", "gapopen", "qstart", "qend", "sstart", "send", "evalue", "bitscore")
+
+#plot histogram of bitscore
+hist(data$bitscore,breaks = 30)
+
+## Asuming your blast results are stored in an object called 'b'
+plot(data$pident  * (data$qend - data$qstart), data$bitscore)
+
+#using ggplot 
+ggplot(data,aes(pident, bitscore)) + geom_point(alpha=0.1) +geom_smooth() 
+ggplot(data, aes((data$pident * (data$qend - data$qstart)), bitscore)) + geom_point(alpha=0.1) + geom_smooth()
+```
+
+## Section III
+```{r}
+#download data
+download.file("https://bioboot.github.io/bggn213_S18/class-material/mouse.1.rna.fna.gz.x.cow.faa.crbl.csv.gz", "shmlast.csv")
+shmlast_out <- read.csv("shmlast.csv")
+head(shmlast_out)
+
+# Check dimention of data
+dim(shmlast_out)
+```
+### Visualization of data
+
+look at the E_scaled column:
+```{r}
+hist(shmlast_out$E_scaled)
+```
+ 
+We could see that most of the values in the E_scaled column are quite high. 
+
+look at the bitscore column
+```{r}
+hist(shmlast_out$bitscore) 
+```
+
+Compare E_scaled to the bitscores
+```{r}
+plot(shmlast_out$q_len, shmlast_out$bitscore)
+```
+
