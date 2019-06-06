@@ -1,6 +1,6 @@
 ---
-title: "Class15"
-author: "Xuerui HUang"
+title: "Class15: Genome annotation and the interpretation of gene lists"
+author: "Xuerui Huang"
 date: "5/22/2019"
 output: 
   github_document:
@@ -124,9 +124,22 @@ keggres = gage(foldchanges, gsets=kegg.sets.hs)
 attributes(keggres)
 head(keggres$less)
 
+#PDF output based on data
 pathview(gene.data=foldchanges, pathway.id="hsa04110")
 ```
+
 ![](hsa04110.pathview.png)
+ More plot
+```{r}
+## Focus on top 5 upregulated pathways here for demo purposes only
+keggrespathways <- rownames(keggres$greater)[1:5]
+
+# Extract the 8 character long IDs part of each string
+keggresids = substr(keggrespathways, start=1, stop=8)
+keggresids
+
+pathview(gene.data=foldchanges, pathway.id=keggresids, species="hsa")
+```
 
 # Gene Ontology
 ```{r}
