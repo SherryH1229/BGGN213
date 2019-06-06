@@ -6,7 +6,7 @@ to the computer-based analysis of genomic and biomolecular data from the Divisio
 
 **Course Director**: [Prof. Barry J. Grant](http://thegrantlab.org/)
 
-This is my coursework from [BGGN-213 at UC San Diego](https://sherryh1229.github.io/BGGN213/) during Spring 2019. 
+This is my coursework from [BGGN-213 at UC San Diego](https://github.com/SherryH1229/BGGN213) during Spring 2019. 
 
 Here you will find all my hands-on work.
 
