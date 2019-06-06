@@ -1,6 +1,7 @@
 # 213bggn
 
-This is my coursework from [BGGN-213 at UC San Diego](https://sherryh1229.github.io/BGGN213/) during Spring 2019. Here you will find all my hands-on work.
+This is my coursework from [BGGN-213 at UC San Diego](https://sherryh1229.github.io/BGGN213/) during Spring 2019. 
+Here you will find all my hands-on work.
 
 My class content includes:
 
@@ -13,6 +14,8 @@ My class content includes:
 - class 08: [Introduction to machine learning for Bioinformatics ](https://github.com/SherryH1229/BGGN213/tree/master/class08)
 
 - class 09: [Unsupervised learning mini-project](https://github.com/SherryH1229/BGGN213/tree/master/class09)
+
+- class 10: Hands-on with Git (No R)
 
 - class 11: [Structural Bioinformatics](https://github.com/SherryH1229/BGGN213/tree/master/class11)
 
