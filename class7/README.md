@@ -1,6 +1,6 @@
 Class 7: R-Functions and packages
 ================
-Xuerui HUang
+Xuerui Huang
 4/24/2019
 
 # Load Data and functions from source

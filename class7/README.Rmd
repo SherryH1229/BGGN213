@@ -1,6 +1,6 @@
 ---
 title: "Class 7: R-Functions and packages"
-author: "Xuerui HUang"
+author: "Xuerui Huang"
 date: "4/24/2019"
 output: github_document
 ---
