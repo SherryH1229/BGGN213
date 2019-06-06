@@ -4,15 +4,15 @@ This is my coursework from [BGGN-213 at UC San Diego](https://sherryh1229.github
 
 My class content includes:
 
-- class 05: [Data exploration and visualization in R](https://github.com/SherryH1229/BGGN213/tree/master/class5)
+- class 05: [Data exploration and visualization in R](https://github.com/SherryH1229/BGGN213/tree/master/class05)
 
-- class 06: [R functions](https://github.com/SherryH1229/BGGN213/tree/master/class6)
+- class 06: [R functions](https://github.com/SherryH1229/BGGN213/tree/master/class06)
 
-- class 07: [Bioinformatics R packages from CRAN and BioConductor](https://github.com/SherryH1229/BGGN213/tree/master/class7)
+- class 07: [Bioinformatics R packages from CRAN and BioConductor](https://github.com/SherryH1229/BGGN213/tree/master/class07)
 
-- class 08: [Introduction to machine learning for Bioinformatics ](https://github.com/SherryH1229/BGGN213/tree/master/class8)
+- class 08: [Introduction to machine learning for Bioinformatics ](https://github.com/SherryH1229/BGGN213/tree/master/class08)
 
-- class 09: [Unsupervised learning mini-project](https://github.com/SherryH1229/BGGN213/tree/master/class9)
+- class 09: [Unsupervised learning mini-project](https://github.com/SherryH1229/BGGN213/tree/master/class09)
 
 - class 11: [Structural Bioinformatics](https://github.com/SherryH1229/BGGN213/tree/master/class11)
 
