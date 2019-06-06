@@ -1,0 +1,113 @@
+---
+title: '9: Unsupervised learning mini-project'
+author: "Xuerui Huang"
+date: "6/5/2019"
+output: github_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+```{r,message=FALSE}
+library(dplyr)
+
+```
+
+# 1. Exploratory data analysis
+
+Data preparation
+```{r}
+#load data from web
+wisc.df <- read.csv("https://bioboot.github.io/bimm143_S18/class-material/WisconsinCancer.csv")
+```
+How many observations (i.e. patients) are in this dataset?
+`nrow(wisc.df)`
+
+How many of the observations have a malignant diagnosis?
+`sum(wisc.df$diagnosis=="M")`
+
+How many variables/features in the data are suffixed with _mean?
+`grepl("_mean", colnames(wisc.df)) %>% sum(.)`
+
+Use as.matrix() to convert the other features (i.e. columns) of the data (in columns 3 through 32) to a matrix. Store this in a variable called wisc.data.
+```{r}
+wisc.data <- as.matrix(wisc.df[,3:32])
+row.names(wisc.data) <- wisc.df$id
+head(wisc.data)
+```
+
+# 2. Principal Component Analysis
+```{r}
+diagnosis <- wisc.df$diagnosis
+
+apply(wisc.data,2,sd)#sd
+colMeans(wisc.data)#mean
+
+# scaling the data
+wisc.pr <- prcomp(wisc.data,scale. = TRUE)
+summary(wisc.pr)
+```
+# Interpreting PCA results
+
+```{r}
+#plot biplot
+biplot(wisc.pr)
+
+# Generate plot for principal components 1 and 2
+plot(wisc.pr$x[,c(1)],wisc.pr$x[,2],col = diagnosis,
+     xlab = "PCA1",ylab = "PCA2")
+
+# Generate a similar plot for principal components 1 and 3
+plot(wisc.pr$x[,c(1)],wisc.pr$x[,3],col = diagnosis,
+     xlab = "PCA1",ylab = "PCA3")
+```
+Principal component 2 explains more variance in the original data than principal component 3.
+
+# Variance explained
+
+Calculate the variance of each principal component by squaring the sdev component of wisc.pr
+```{r}
+# Variance calculation
+pr.var <- wisc.pr$sdev^2
+head(pr.var)
+
+pve <- pr.var/sum(pr.var)
+
+#plot
+plot(pve,type = "o",xlab = "Principle Component",
+     ylab = "Proportion of variance explained")
+
+# Alternative plot in bar plot format
+barplot(pve,names.arg = paste0("PC",c(1:length(pve))),las = 2,
+        ylab = "Percent of variance explained",axes = FALSE)+
+  axis(2, at=pve, labels=round(pve,2)*100 )
+```
+
+Try to plot similar plot by using **factoextra** package
+```{r}
+require(factoextra)
+fviz_eig(wisc.pr, addlabels = TRUE)
+```
+
+# 3. Hierarchical clustering
+
+```{r}
+#hierachical clustering
+data.scaled <- scale(wisc.data)
+
+# Calculate the (Euclidean) distances 
+data.dist <- dist(data.scaled)
+
+# Create a hierarchical clustering model using complete linkage
+hclust(data.dist) %>% plot(.)+abline(h = 18,col = "red")
+cutree(hclust(data.dist),k = 4)%>% plot(.)
+```
+
+select number of clusters
+```{r}
+wisc.hclust.clusters <- cutree(hclust(data.dist),k = 6)
+
+# check the grouping of data based on K-means and compair with original data
+table(wisc.hclust.clusters,diagnosis)
+```
+
