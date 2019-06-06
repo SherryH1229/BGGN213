@@ -10,7 +10,7 @@ knitr::opts_chunk$set(echo = TRUE)
 ```
 
 #load package
-```{r}
+```{r,message=FALSE}
 library(DESeq2)
 library(pcaExplorer)
 library(tidyverse)
