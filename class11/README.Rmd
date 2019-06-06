@@ -1,0 +1,122 @@
+---
+title: " Class 11: Structural Bioinformatics (Part 1)"
+author: "Xuerui Huang"
+date: "5/8/2019"
+output: github_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+
+
+# Load PDB Data Export Summary
+```{r}
+#load data
+db <- read.csv("Data Export Summary.csv")
+#read(db)
+
+#total number of protein structure
+sum(db$Total)
+
+#percent of protein
+db$Perc <- (db$Total/sum(db$Total))*100
+```
+
+# Section 3 Introduction to Bio3D in R
+
+Bio3D is an R package for structural bioinformatics , . Features include the ability to read, write 1 2 3
+and analyze biomolecular structure, sequence and dynamic trajectory data.
+```{r}
+library(bio3d)
+```
+
+load 1hsg data from PDB
+```{r}
+pdb <- read.pdb("1hsg.pdb")
+
+aa321(pdb$seqres) #show protein sequence
+
+# Print a subset of $atom data for the first two atoms
+pdb$atom[1:2, c("eleno", "elety", "x","y","z")]
+
+# Print a summary of the coordinate data in $xyz
+pdb$xyz
+
+# Examine the row and column dimensions
+dim(pdb$xyz)
+
+# Print coordinates for the first two atom
+pdb$xyz[ 1, atom2xyz(1:2) ]
+```
+
+# Section 4: Atom selection
+```{r}
+# Select all C-alpha atoms 
+ca.inds <- atom.select(pdb, "calpha")
+ca.inds
+
+# print info
+head( pdb$atom[ca.inds$atom, ] )
+
+# Select chain A
+a.inds <- atom.select(pdb, chain="A")
+# Select C-alphas of chain A
+ca.inds <- atom.select(pdb, "calpha", chain="A")
+# We can combine multiple selection criteria to return their intersection
+cab.inds <- atom.select(pdb, elety=c("CA","CB"), chain="A",
+resno=10:20)
+```
+
+# Section 5: 3D structure viewing in R
+```{r}
+prot <- atom.select(pdb,"protein",value = TRUE)
+write.pdb(prot,file = "1hsg_protein.pdb")
+
+prot <- atom.select(pdb,"ligand",value = TRUE)
+write.pdb(prot,file = "1hsg_lig.pdb")
+```
+
+# Section 6: Working with multiple PDB files
+```{r}
+#align multiple files
+ids <- c("1TND_B","1AGR_A","1TAG_A","1GG2_A","1KJY_A","4G5Q_A")
+files <- get.pdb(ids, split = TRUE)
+
+# Extract and align the chains we are interested in
+pdbs <- pdbaln(files, fit = TRUE)
+
+# prinnt part of result
+pdbs$ali[1:5, 1:8]
+```
+
+Calculate the pairwise sequence identity between the structures of the pdbs
+ensemble followed by the root mean square deviation (RMSD)
+```{r}
+# Calculate sequence identity
+seqidentity(pdbs)
+
+# Calculate RMSD
+rd <- rmsd(pdbs)
+```
+clustering and PCA
+```{r}
+# Clustering
+hc <- hclust(as.dist(rd))
+grps <- cutree(hc, k=3)
+
+# Plot results as dendrogram
+hclustplot(hc, k=3)
+
+# Perform PCA
+pc.xray <- pca(pdbs)
+# Plot our results summary (PCA score plot and scree-plot)
+plot(pc.xray)
+```
+
+
+
+
+
+
