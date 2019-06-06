@@ -1,8 +1,8 @@
 ---
-title: "class17"
-author: "Xuerui HUang"
+title: "class17: Biological network analysis"
+author: "Xuerui Huang"
 date: "5/29/2019"
-output: html_document
+output: github_document
 ---
 
 ```{r setup, include=FALSE}
@@ -16,7 +16,7 @@ library(igraph)
 library(RColorBrewer)
 ```
 
-test the package 
+Test the package 
 ```{r}
 # test whetehr the package is running correctly
 cytoscapePing()
@@ -49,7 +49,7 @@ prok_vir_cor <- read.delim("virus_prok_cor_abundant.tsv", stringsAsFactors = FAL
 ## Have a peak at the first 6 rows
 head(prok_vir_cor)
 ```
-how many unique species are there 
+how many unique species are there?
 ```{r}
 length(unique(prok_vir_cor[,1],prok_vir_cor[,2]))
 ```
@@ -64,7 +64,7 @@ g
 plot(g, vertex.size=3, vertex.label=NA)
 ```
 
-# ggplot 
+plot using ggplot 
 ```{r}
 library(ggraph)
 ggraph(g, layout = 'auto') +
@@ -79,13 +79,15 @@ ggraph(g, layout = 'auto') +
 V(g) # query vertex
 E(g) # query edges
 ```
-## network community detection]
+## Network community detection
 ```{r}
 cb <- cluster_edge_betweenness(g)
 cb
 plot(cb, y=g, vertex.label=NA,  vertex.size=3)
 head( membership(cb) )
 ```
+
+## Node degree
 ```{r}
 # Calculate and plot node degree of our network
 d <- degree(g)
@@ -111,5 +113,49 @@ head(phage_id_affiliation)
 bac_id_affi <- read.delim("prok_tax_from_silva.tsv", stringsAsFactors = FALSE)
 head(bac_id_affi)
 
+# Add taxonomic annotation data to network
+genenet.nodes <- as.data.frame(vertex.attributes(g), stringsAsFactors=FALSE)
+head(genenet.nodes)
+```
+we have `length( grep("^ph_",genenet.nodes[,1]) )` phage entries
+
+```{r}
+#subset to smaller data set
+z <- bac_id_affi[,c("Accession_ID", "Kingdom", "Phylum", "Class")]
+n <- merge(genenet.nodes, z, by.x="name", by.y="Accession_ID", all.x=TRUE)
+head(n)
+
+colnames(n) #check colnames
+
+# Subset phage_id_affiliation
+y <- phage_id_affiliation[, c("first_sheet.Phage_id_network", "phage_affiliation","Tax_order", "Tax_subfamily")]
+
+# format data
+x <- merge(x=n, y=y, by.x="name", by.y="first_sheet.Phage_id_network", all.x=TRUE)
+x <- x[!duplicated( (x$name) ),]
+head(x)
+
+genenet.nodes <- x #save annotation result
+colnames(genenet.nodes)[1] <- "id"
+```
+
+# Send network to Cytoscape using RCy3
+```{r}
+deleteAllNetworks()
+
+genenet.edges <- data.frame(igraph::as_edgelist(g))
+
+# Set the main edges colname to the required "source" and "target" 
+colnames(genenet.edges) <- c("source","target")
+
+# Add the weight from igraph to a new column...
+genenet.edges$Weight <- igraph::edge_attr(g)$weight
+
+# Send as a new network to Cytoscape
+createNetworkFromDataFrames(genenet.nodes,genenet.edges, 
+                            title="Tara_Oceans")
+```
+```{r}
+knitr::include_graphics("./network.png")
 ```
 
