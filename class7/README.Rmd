@@ -1,5 +1,5 @@
 ---
-title: "lecture7_proj: R: Functions and packages"
+title: "Class 7: R-Functions and packages"
 author: "Xuerui HUang"
 date: "4/24/2019"
 output: github_document
@@ -9,39 +9,44 @@ output: github_document
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
-## R Markdown
+# Load Data and functions from source
 ```{r}
 source("http://tinyurl.com/rescale-R")
 ```
+by source the rescale-R, 3 data and 9 functions appeared in the environmnet
+
+test the functions
 ```{r}
 #test the rescale function
 rescale(1:10)
 
-#test function
+#test function to change number vector to string
 x <- c(1:10,"string")
-is.numeric(x)
-
+is.numeric(x) #check whether the output is numerical
 ```
 
-## Function for recognize NA in two vectors
+# Function for recognize NA in two vectors
+
+Testing the function for recognize NA in two vectors
 ```{r}
 #sample input
 x <- c( 1, 2, NA, 3, NA)
 y<-c(NA,3,NA,3, 4)
-
-sum(is.na (x)&is.na(y))
 
 #function for checking whether two elements on the same position of two vectors have NA
 both_na <- function(x,y){
   sum(is.na(x)&is.na(y))
 }
 
+both_na(x,y)
 ```
-## function for grading homework
-```{r}
+# function for grading homework
 
+Function for alcualting the final score for every studnet.
+Method: The lowest score is dropped. The absence should be punished (not count as lowest score)
+```{r}
 student1 <- c(rep(100,time= 8),90)
-student2 <- c(100,NA,rep(90,time = 4),97,80)
+student2 <- c(100,NA,NA,rep(90,time = 4),97,80)
 
 #forloop
 overall_grade <- function(stud_vec){
@@ -60,26 +65,18 @@ overall_grade <- function(stud_vec){
 #better way
 overall_grade_2 <- function(stud_vec){
   if (sum(is.na(stud_vec) >0)){
-    stud_vec <- stud_vec[!is.na(stud_vec)]
+    stud_vec_mod <- stud_vec[!is.na(stud_vec)]
+  }
+  else {
+    stud_vec_mod <- stud_vec
   }
   
-  (sum(stud_vec)-min(stud_vec))/(length(stud_vec)-1)
+  (sum(stud_vec_mod)-min(stud_vec_mod))/(length(stud_vec)-1)
 }
 
-overall_grade(student1)
-overall_grade(student2)
-
+#calculate the final score
 overall_grade_2(student1)
 overall_grade_2(student2)
 ```
 
-
-```{r}
-#library(bio3d)
-
-#lbio3d()
-
-# demo(package="bio3d")
-# demo("nma")
-```
 
