@@ -1,4 +1,4 @@
-class13
+class 12: Bioinformatics in drug discovery and design
 ================
 Xuerui HUang
 5/10/2019
@@ -142,7 +142,7 @@ modes <- nma( pdb )
 ```
 
     ##  Building Hessian...     Done in 0.017 seconds.
-    ##  Diagonalizing Hessian...    Done in 0.115 seconds.
+    ##  Diagonalizing Hessian...    Done in 0.103 seconds.
 
 ``` r
 m7 <- mktrj(modes, mode=7, file="mode_7.pdb")
