@@ -1,6 +1,6 @@
 ---
-title: "Class17 R anlysis"
-author: "Xuerui HUang"
+title: "Class18: Cancer genomics"
+author: "Xuerui Huang"
 date: "5/31/2019"
 output: github_document
 ---
@@ -8,13 +8,15 @@ output: github_document
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
 ```
-```{r}
+# Load package 
+```{r,message=FALSE}
 library(GenomicDataCommons)
 library(TCGAbiolinks)
 library(maftools)
 
 status()
 ```
+# Querying the GDC from R
 ```{r}
 projects <- getGDCprojects()
 head(projects)
@@ -29,12 +31,27 @@ colvec[which(x$key=="TCGA-PAAD")] <- "red"
 
 barplot(x$doc_count,log="y",names.arg=x$key,col=colvec, las=2)
 ```
+Trying TCGAbiolinks package
+```{r}
+samp <- getSampleFilesSummary("TCGA-PAAD")
+head(samp)
 
-# Detect Cancer 
+query <- GDCquery(project="TCGA-PAAD",
+                  data.category="Transcriptome Profiling",
+                  data.type="Gene Expression Quantification")
+
+ans <- getResults(query)
+
+head(ans)
+```
+
+
+# Detect Cancer:Variant analysis with R
 ```{r}
 library(bio3d)
 seqs<- read.fasta("lecture18_sequences.fa")
 
+# My own try of finding the sequence
 kmer_cands <- c()
 for (i in (1:length(seqs$ali))){
   if (seqs$ali[,i][2] == "-"){
@@ -50,8 +67,10 @@ for (i in (1:length(seqs$ali))){
   
 }
 
+#my output
 kmer_cands
 
+# using function: output
 conserv(seqs,method = "identity")
 ```
 
