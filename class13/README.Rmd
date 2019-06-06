@@ -1,0 +1,42 @@
+---
+title: "Class 13: Genome informatics and high throughput sequencing"
+author: "Xuerui Huang"
+date: "5/15/2019"
+output: github_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+# Plotting Expression values
+```{r}
+library(seqinr)
+library(gtools)
+phred <- asc( s2c("DDDDCDEDCDDDDBBDDDCC@") ) - 33
+phred
+```
+```{r}
+# laod data from url
+expr <- read.csv("https://bioboot.github.io/bggn213_W19/class-material/rs8067378_ENSG00000172057.6.txt",sep = " ")
+
+#Check data
+summary(expr)
+summary( expr[expr[,2] == "A/A",3] )
+summary( expr[expr[,2] == "G/G",3] )
+summary( expr[expr[,2] == "A/G",3] )
+
+#plot boxplot
+boxplot(expr$exp,group = expr$geno)
+
+#plot
+p <- boxplot(exp~geno,data = expr,notch = TRUE)
+p
+```
+
+Generate some nice plots
+
+```{r}
+
+```
+
