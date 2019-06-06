@@ -1,8 +1,13 @@
-# BGGN213 Fundation of Bioinformatics
+# BGGN213: Foundations of Bioinformatics
 
-**A hands-on introduction to the computer-based analysis of genomic and biomolecular data from the Division of Biological Sciences, UCSD**
+**Overview**: Bioinformatics is driving the collection and analysis of big data in the biosciences.
+This course is designed for bioscience graduate students and provides a hands-on introduction
+to the computer-based analysis of genomic and biomolecular data from the Division of Biological Sciences, UCSD
+
+**Course Director**: [Prof. Barry J. Grant](http://thegrantlab.org/)
 
 This is my coursework from [BGGN-213 at UC San Diego](https://sherryh1229.github.io/BGGN213/) during Spring 2019. 
+
 Here you will find all my hands-on work.
 
 My class content includes:
